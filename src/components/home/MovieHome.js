@@ -17,6 +17,14 @@ const MovieHome = ({ movies }) => (
               <div className="cation">
                 <h3 style={{ width: "200px" }}>
                   <a>{movie.title}</a>
+                  {/* <Link
+                    to={{
+                      pathname: "/home/details/" + movie.movieId,
+                      state: { movie: true }
+                    }}
+                  >
+                    {movie.title}
+                  </Link> */}
                   {/* <a asp-controller="Home" asp-action="Details" asp-route-id="@movie.MovieId"> </a> */}
                 </h3>
                 <div style={{ width: "200px" }}>{movie.releaseDate}</div>

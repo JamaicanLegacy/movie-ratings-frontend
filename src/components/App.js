@@ -12,6 +12,7 @@ import ActorsPage from "./actors/ActorsPage";
 import DirectorsPage from "./directors/DirectorsPage";
 import GenresPage from "./genres/GenresPage";
 import MediaHousesPage from "./mediahouse/MediaHousesPage";
+// import Details from "./home/Details";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Header />
       <Switch>
         <Route exact path="/" component={HomePage} />
+        {/* <Route path="/home/details/:movieId" component={Details} /> */}
         <Route path="/movies" component={MoviesPage} />
         <Route path="/movie/:slug" component={ManageMoviePage} />
         <Route path="/movie" component={ManageMoviePage} />
