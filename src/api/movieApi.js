@@ -13,7 +13,10 @@ export function getMovies() {
           price: item.price,
           imgThumbnailUrl: item.imgThumbnailUrl,
           releaseDate: item.releaseDate,
-          actors: []
+          actors: item.movieActors,
+          directors: item.movieDirectors,
+          genres: item.movieGenres,
+          mediaHouses: item.movieMediaHouses
         };
         movie.slug = createSlug(movie.title);
         return movie;
@@ -32,8 +35,8 @@ export function saveMovie(movie) {
     .catch(handleError);
 }
 
-export function deleteMovie(movie) {
-  return fetch(baseUrl + movie.movieId, { method: "DELETE" })
+export function deleteMovie(movieId) {
+  return fetch(baseUrl + movieId, { method: "DELETE" })
     .then(handleResponse)
     .catch(handleError);
 }
@@ -54,41 +57,83 @@ export function getMovieActor(movie) {
 }
 
 export function saveMovieActor(movie) {
+  let movieActors = {
+    actors: [...movie.actors]
+  };
   return fetch(baseUrl + movie.movieId + "/actor", {
     method: "PUT",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(movie.actors),
+    body: JSON.stringify(movieActors),
     mode: "cors"
   });
 }
 
-export function saveMovieDirectors(movie, director) {
-  let movieDirector = { movieId: movie.movieId, directorId: director.actorId };
-  return fetch(baseUrl + movieDirector.movieId + "/director", {
+export function deleteMovieActor(movieActor) {
+  return fetch(baseUrl + movieActor.movieId + "/actor", {
+    method: "DELETE",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(movieActor),
+    mode: "cors"
+  });
+}
+
+export function saveMovieDirector(movie) {
+  let movieDirectors = {
+    directors: [...movie.directors]
+  };
+  return fetch(baseUrl + movie.movieId + "/director", {
     method: "PUT",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(movieDirectors),
+    mode: "cors"
+  });
+}
+
+export function deleteMovieDirector(movieDirector) {
+  return fetch(baseUrl + movieDirector.movieId + "/director", {
+    method: "DELETE",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(movieDirector),
     mode: "cors"
   });
 }
 
-export function savemovieGenre(movie, genre) {
-  let movieGenre = { movieId: movie.movieId, genreId: genre.actorId };
-  return fetch(baseUrl + movieGenre.movieId + "/gerne", {
+export function saveMovieGenre(movie) {
+  let movieGenres = {
+    genres: [...movie.genres]
+  };
+  return fetch(baseUrl + movie.movieId + "/genre", {
     method: "PUT",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(movieGenres),
+    mode: "cors"
+  });
+}
+
+export function deleteMovieGenre(movieGenre) {
+  return fetch(baseUrl + movieGenre.movieId + "/genre", {
+    method: "DELETE",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(movieGenre),
     mode: "cors"
   });
 }
 
-export function saveMovieMediaHouse(movie, mediaHouse) {
+export function saveMovieMediaHouse(movie) {
   let movieMediaHouse = {
-    movieId: movie.movieId,
-    mediaHouseId: mediaHouse.actorId
+    mediaHouses: [...movie.mediaHouses]
   };
-  return fetch(baseUrl + movieMediaHouse.movieId + "/mediaHouse", {
+  return fetch(baseUrl + movie.movieId + "/mediaHouse", {
     method: "PUT",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(movieMediaHouse),
+    mode: "cors"
+  });
+}
+
+export function deleteMovieMediaHouse(movieMediaHouse) {
+  return fetch(baseUrl + movieMediaHouse.movieId + "/mediaHouse", {
+    method: "DELETE",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(movieMediaHouse),
     mode: "cors"

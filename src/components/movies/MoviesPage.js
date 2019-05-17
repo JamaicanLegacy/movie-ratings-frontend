@@ -27,11 +27,16 @@ class MoviesPage extends React.Component {
     this.props.actions.resetSelectedMovie();
   };
   handleDeleteMovie = async movie => {
-    toast.success("Movie deleted");
-    try {
-      await this.props.actions.deleteMovie(movie);
-    } catch (error) {
-      toast.error("Delete failed. " + error.message, { autoClose: false });
+    var result = confirm(
+      "Are you sure you want to delete " + movie.title + "?"
+    );
+    if (result) {
+      toast.success("Movie deleted");
+      try {
+        await this.props.actions.deleteMovie(movie);
+      } catch (error) {
+        toast.error("Delete failed. " + error.message, { autoClose: false });
+      }
     }
   };
 

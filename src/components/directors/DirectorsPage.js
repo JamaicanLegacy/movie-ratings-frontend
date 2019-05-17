@@ -23,11 +23,20 @@ class directorsPage extends React.Component {
   }
 
   handleDeleteDirector = async director => {
-    toast.success("director deleted");
-    try {
-      await this.props.actions.deleteDirector(director);
-    } catch (error) {
-      toast.error("Delete Failed. " + error.message, { autoClose: false });
+    var result = confirm(
+      "Are you sure you want to delete " +
+        director.firstName +
+        " " +
+        director.lastName +
+        "?"
+    );
+    if (result) {
+      toast.success("director deleted");
+      try {
+        await this.props.actions.deleteDirector(director);
+      } catch (error) {
+        toast.error("Delete Failed. " + error.message, { autoClose: false });
+      }
     }
   };
 

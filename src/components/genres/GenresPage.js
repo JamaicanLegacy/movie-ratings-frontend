@@ -22,11 +22,14 @@ class GenresPage extends React.Component {
   }
 
   handleDeleteGenre = async genre => {
-    toast.success("Genre deleted");
-    try {
-      await this.props.actions.deleteGenre(genre);
-    } catch (error) {
-      toast.error("Delete Failed. " + error.message, { autoClose: false });
+    var result = confirm("Are you sure you want to delete " + genre.name + "?");
+    if (result) {
+      toast.success("Genre deleted");
+      try {
+        await this.props.actions.deleteGenre(genre);
+      } catch (error) {
+        toast.error("Delete Failed. " + error.message, { autoClose: false });
+      }
     }
   };
 

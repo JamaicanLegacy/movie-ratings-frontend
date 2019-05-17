@@ -22,11 +22,16 @@ class MediaHousesPage extends React.Component {
   }
 
   handleDeleteMediaHouse = async mediaHouse => {
-    toast.success("MediaHouse deleted");
-    try {
-      await this.props.actions.deleteMediaHouse(mediaHouse);
-    } catch (error) {
-      toast.error("Delete Failed. " + error.message, { autoClose: false });
+    var result = confirm(
+      "Are you sure you want to delete " + mediaHouse.name + "?"
+    );
+    if (result) {
+      toast.success("MediaHouse deleted");
+      try {
+        await this.props.actions.deleteMediaHouse(mediaHouse);
+      } catch (error) {
+        toast.error("Delete Failed. " + error.message, { autoClose: false });
+      }
     }
   };
 

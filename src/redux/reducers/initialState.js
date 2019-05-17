@@ -6,5 +6,7 @@ export default {
   mediaHouses: [],
   selectedMovie: {},
   movieActors: [],
+  movieDirectors: [],
+  movieGenres: [],
   apiCallsInProgress: 0
 };

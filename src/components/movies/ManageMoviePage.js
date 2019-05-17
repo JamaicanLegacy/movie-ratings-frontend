@@ -3,24 +3,59 @@ import { connect } from "react-redux";
 import {
   loadMovies,
   saveMovie,
-  saveMovieActor,
+  addDummyActors,
   updateActors,
-  addDummyActors
+  saveMovieActor,
+  removeMovieActors,
+  addDummyDirectors,
+  updateDirectors,
+  saveMovieDirector,
+  removeMovieDirectors,
+  addDummyGenres,
+  updateGenres,
+  saveMovieGenre,
+  removeMovieGenres,
+  addDummyMediaHouses,
+  updateMediaHouses,
+  saveMovieMediaHouse,
+  removeMovieMediaHouses
 } from "../../redux/actions/movieActions";
 import { loadActors } from "../../redux/actions/actorActions";
+import { loadDirectors } from "../../redux/actions/directorActions";
+import { loadGenres } from "../../redux/actions/genreActions";
+import { loadMediaHouses } from "../../redux/actions/mediaHouseActions";
 import PropTypes from "prop-types";
 import MovieForm from "./MovieForm";
 import Spinner from "../common/Spinner";
 import { toast } from "react-toastify";
-
 function ManageMoviePage({
   movies,
   actors,
+  directors,
+  genres,
+  mediaHouses,
   loadActors,
+  loadDirectors,
+  loadGenres,
+  loadMediaHouses,
   loadMovies,
   saveMovie,
-  updateActors,
   addDummyActors,
+  updateActors,
+  saveMovieActor,
+  removeMovieActors,
+  addDummyDirectors,
+  updateDirectors,
+  saveMovieDirector,
+  removeMovieDirectors,
+  addDummyGenres,
+  updateGenres,
+  removeMovieGenres,
+  saveMovieGenre,
+  addDummyMediaHouses,
+  updateMediaHouses,
+  saveMovieMediaHouse,
+  removeMovieMediaHouses,
   history,
   ...props
 }) {
@@ -41,22 +76,34 @@ function ManageMoviePage({
         alert("Loading actors failed" + error);
       });
     }
+    if (directors.length === 0) {
+      loadDirectors().catch(error => {
+        alert("Loading directors failed" + error);
+      });
+    }
+    if (genres.length === 0) {
+      loadGenres().catch(error => {
+        alert("Loading genres failed" + error);
+      });
+    }
+    if (mediaHouses.length === 0) {
+      loadMediaHouses().catch(error => {
+        alert("Loading media Houses failed" + error);
+      });
+    }
   }, [movie]);
 
   function handleChange(event, index = 0) {
     const { name, value } = event.target;
     if (name === "actorId" && value !== 0) {
-      console.log("OnChange", name, value);
-      //  action.actor.actorId
       updateActors({ [name]: parseInt(value, 10) }, index);
-      // setMovie(prevMovie => ({
-      //   ...prevMovie,
-      //   actors: [...prevMovie.actors]
-      // }));
-      // console.log(movie);
-    }
-    /// TODO: Check Side effect in REDUX
-    else
+    } else if (name === "directorId" && value !== 0) {
+      updateDirectors({ [name]: parseInt(value, 10) }, index);
+    } else if (name === "genreId" && value !== 0) {
+      updateGenres({ [name]: parseInt(value, 10) }, index);
+    } else if (name === "mediaHouseId" && value !== 0) {
+      updateMediaHouses({ [name]: parseInt(value, 10) }, index);
+    } else
       setMovie(prevMovie => ({
         ...prevMovie,
         [name]: value
@@ -73,12 +120,55 @@ function ManageMoviePage({
     setErrors(errors);
     return Object.keys(errors).length === 0;
   }
+
   function handleSave(event) {
     event.preventDefault();
     if (!formIsValid()) return;
     setSaving(true);
-    if (movie.actors && movie.actors.length > 0) {
-      saveMovieActor(movie);
+    newMovie.movieId = props.movie.movieId;
+    if (props.movie.actors && props.movie.actors.length > 0) {
+      newMovie.actors = props.movie.actors.filter(
+        act1 =>
+          !movie.actors.some(
+            act2 => act2.actorId === act1.actorId && act1.movieId != null
+          )
+      );
+      if (newMovie.actors.length > 0) {
+        saveMovieActor(newMovie);
+      }
+    }
+    if (props.movie.directors && props.movie.directors.length > 0) {
+      newMovie.directors = props.movie.directors.filter(
+        dir1 =>
+          !movie.directors.some(
+            dir2 => dir2.directorId === dir1.directorId && dir1.movieId != null
+          )
+      );
+      if (newMovie.directors.length > 0) {
+        saveMovieDirector(newMovie);
+      }
+    }
+    if (props.movie.genres && props.movie.genres.length > 0) {
+      newMovie.genres = props.movie.genres.filter(
+        gen1 =>
+          !movie.genres.some(
+            gen2 => gen2.genreId === gen1.genreId && gen1.movieId != null
+          )
+      );
+      if (newMovie.genres.length > 0) {
+        saveMovieGenre(newMovie);
+      }
+    }
+    if (props.movie.mediaHouses && props.movie.mediaHouses.length > 0) {
+      newMovie.mediaHouses = props.movie.mediaHouses.filter(
+        mh1 =>
+          !movie.mediaHouses.some(
+            mh2 => mh2.mediaHouseId === mh1.mediaHouseId && mh1.movieId !== null
+          )
+      );
+      if (newMovie.mediaHouses.length > 0) {
+        saveMovieMediaHouse(newMovie);
+      }
     }
     saveMovie(movie)
       .then(() => {
@@ -100,9 +190,19 @@ function ManageMoviePage({
       movie={movie}
       errors={errors}
       actors={actors}
+      directors={directors}
+      mediaHouses={mediaHouses}
+      genres={genres}
       movies={movies}
       onChange={handleChange}
       onUpdateActors={addDummyActors}
+      onDeleteActor={removeMovieActors}
+      onUpdateDirectors={addDummyDirectors}
+      onDeleteDirector={removeMovieDirectors}
+      onUpdateGenres={addDummyGenres}
+      onDeleteGenre={removeMovieGenres}
+      onUpdateMediaHouses={addDummyMediaHouses}
+      onDeleteMediaHouse={removeMovieMediaHouses}
       onSave={handleSave}
       saving={saving}
     />
@@ -112,12 +212,32 @@ function ManageMoviePage({
 ManageMoviePage.propTypes = {
   movie: PropTypes.object.isRequired,
   actors: PropTypes.array.isRequired,
+  genres: PropTypes.array.isRequired,
+  directors: PropTypes.array.isRequired,
   movies: PropTypes.array.isRequired,
+  mediaHouses: PropTypes.array.isRequired,
   loadMovies: PropTypes.func.isRequired,
+  loadDirectors: PropTypes.func.isRequired,
   loadActors: PropTypes.func.isRequired,
+  loadGenres: PropTypes.func.isRequired,
+  loadMediaHouses: PropTypes.func.isRequired,
   saveMovie: PropTypes.func.isRequired,
   updateActors: PropTypes.func.isRequired,
+  updateDirectors: PropTypes.func.isRequired,
+  updateGenres: PropTypes.func.isRequired,
+  updateMediaHouses: PropTypes.func.isRequired,
+  saveMovieActor: PropTypes.func.isRequired,
+  saveMovieDirector: PropTypes.func.isRequired,
+  saveMovieGenre: PropTypes.func.isRequired,
+  saveMovieMediaHouse: PropTypes.func.isRequired,
   addDummyActors: PropTypes.func.isRequired,
+  addDummyGenres: PropTypes.func.isRequired,
+  addDummyDirectors: PropTypes.func.isRequired,
+  addDummyMediaHouses: PropTypes.func.isRequired,
+  removeMovieDirectors: PropTypes.func.isRequired,
+  removeMovieActors: PropTypes.func.isRequired,
+  removeMovieGenres: PropTypes.func.isRequired,
+  removeMovieMediaHouses: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired
 };
 
@@ -135,26 +255,44 @@ const newMovie = {
   // actors: []
 };
 //need to add actors
-function mapStateToProps(
-  state
-  // , ownProps
-) {
-  // const slug = ownProps.match.params.slug;
+function mapStateToProps(state) {
   const movie =
-    //  slug && state.movies.length > 0
-    //  ? getMovieBySlug(state.movies, slug)
-    state.movies.length > 0 && state.selectedMovie
+    state.movies.length > 0 && state.selectedMovie.title
       ? state.selectedMovie
       : newMovie;
-  return { movie, movies: state.movies, actors: state.actors };
+  return {
+    movie,
+    movies: state.movies,
+    actors: state.actors,
+    directors: state.directors,
+    genres: state.genres,
+    mediaHouses: state.mediaHouses
+  };
 }
 
 const mapDispatchToProps = {
   loadMovies,
   loadActors,
+  loadDirectors,
+  loadGenres,
+  loadMediaHouses,
   saveMovie,
+  addDummyActors,
   updateActors,
-  addDummyActors
+  saveMovieActor,
+  removeMovieActors,
+  addDummyDirectors,
+  updateDirectors,
+  saveMovieDirector,
+  removeMovieDirectors,
+  addDummyGenres,
+  updateGenres,
+  saveMovieGenre,
+  removeMovieGenres,
+  addDummyMediaHouses,
+  updateMediaHouses,
+  saveMovieMediaHouse,
+  removeMovieMediaHouses
 };
 
 export default connect(

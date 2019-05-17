@@ -22,11 +22,20 @@ class ActorsPage extends React.Component {
   }
 
   handleDeleteActor = async actor => {
-    toast.success("Actor deleted");
-    try {
-      await this.props.actions.deleteActor(actor);
-    } catch (error) {
-      toast.error("Delete Failed. " + error.message, { autoClose: false });
+    var result = confirm(
+      "Are you sure you want to delete " +
+        actor.firstName +
+        " " +
+        actor.lastName +
+        "?"
+    );
+    if (result) {
+      toast.success("Actor deleted");
+      try {
+        await this.props.actions.deleteActor(actor);
+      } catch (error) {
+        toast.error("Delete Failed. " + error.message, { autoClose: false });
+      }
     }
   };
 
